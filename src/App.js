@@ -16,6 +16,8 @@ function App() {
   const [gameData, setGameData] = useState([0,0,0,0,0,0,0,0,0]);
   const [turn, setTurn] = useState(1);
   const [winningCombo, setWinningCombo] = useState(null);
+  const [titleturn, setTitleturn] = useState(`Vez de ${turn == 1 ? "X":"O"} jogar!!!`);
+  const [activeButton, setActiveButton] = useState(null)
 
   const handleClick = (clickedIndex) =>{
     //marcar apenas uma vez
@@ -38,22 +40,20 @@ function App() {
     //troca o turno dos jogadores
     setTurn((prev) => (prev == 1?2:1));
 
+    //troca o cabeçalho
+    setTitleturn(`Vez de ${turn == 1 ? "O":"X"} jogar!!!`)
   };
-  
-  useEffect(() =>{
-    checkGameEnded();
-    checkWinner(); 
-  },[gameData]);
 
   const checkGameEnded = () => {
     if (gameData.every((item) => item !== 0)) {
-      
+      setActiveButton(true);
+      setTitleturn(`Deu velha !!!`);
     }
   };
 
-  useEffect(() => {
+  useEffect(() => {   
     if (winningCombo) {
-      
+      setTitleturn(`${turn == 1 ? "O":"X"} é o vencendor !!!`);
     }
   }, [winningCombo]);
 
@@ -74,29 +74,38 @@ function App() {
         winner="0";
       }
       if (winner) {
+        setActiveButton(true);
         setWinningCombo(values);
         break;
       }
     }
-    console.log({winner});
   };
+
+  useEffect(() =>{
+    checkGameEnded();
+    checkWinner(); 
+  },[gameData]);
 
   return (
     <>
       <div>
-        <h2 className='turn'>Vez de {turn == 1 ?"X":"O"} jogar!!!
-        </h2>
+        <h2 className='turn'>{titleturn}</h2>
       </div>
       <div className={ turn==1 ? "boardx board-game":"boardO board-game"}>
         {gameData.map((valeu, index)=> (
-        <span key = {index} 
+        <span 
+        key = {index} 
         onClick={() => {handleClick(index)}}
-        className={(index)=>{winningCombo?.includes(index)? "winner":undefined, index== 1? "x":"o"}}>
+        className={valeu ? (valeu == 1 && "x" || valeu == 2 && "o"):undefined}>
           {valeu == 1 && "❌"}
           {valeu == 2 && "⭕️"}
         </span>
         ))}
       </div>
+      <div className='board-bottom'style={activeButton ? {display:'flex'}:{display:'none'}}>
+        <button onClick={() => window.location.reload(false)} className="button-reload">Novo Jogo</button>
+      </div>
+      
     </>
   );
 }
