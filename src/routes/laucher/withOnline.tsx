@@ -5,7 +5,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import io from "socket.io-client";
 
-const socket = io("http://web-socket-tic-tac-toe.vercel.app");
+const socket = io(
+  "https://70fad665-8330-4e9e-9279-93ad5c090e1a-00-3va5oybqxbu8w.spock.replit.dev/"
+);
 
 export const Route = createFileRoute("/laucher/withOnline")({
   component: RouteComponent,
